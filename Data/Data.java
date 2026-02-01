@@ -1,8 +1,11 @@
 package Data;
 
+import java.util.Arrays;
+
 public class Data {
-    String test;
-    public Data(String test) {
-        this.test = test;
+    public TestData[] warmupData = new TestData[3];
+
+    public Data() {
+        Arrays.fill(warmupData, new TestData());
     }
 }
