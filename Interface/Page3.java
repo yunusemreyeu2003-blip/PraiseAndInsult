@@ -16,7 +16,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class Page3 extends Page{
@@ -51,10 +50,10 @@ public class Page3 extends Page{
         retryButton.setOnAction(event -> {
             onShow();
         });
-
         nextButton.setText("Sonraki");
-
         navigation.getChildren().addAll(retryButton, nextButton);
+
+        centerStack.setAlignment(Pos.CENTER);
 
         countdownText.setFont(new Font(80));
 
@@ -65,8 +64,6 @@ public class Page3 extends Page{
         endText.setTextAlignment(TextAlignment.CENTER);
 
         centerStack.getChildren().addAll(countdownText, endText);
-
-        centerStack.setAlignment(Pos.CENTER);
 
         borderPane.setFocusTraversable(true);
         borderPane.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
