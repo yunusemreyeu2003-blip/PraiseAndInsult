@@ -28,9 +28,8 @@ public class Page1 extends Page {
         navigation.setAlignment(Pos.CENTER);
         navigation.spacingProperty().bind(bottomStack.widthProperty().multiply(0.1));
 
-        prevButton.setText("Previous");
         nextButton.setText("Next");
-        navigation.getChildren().addAll(prevButton, nextButton);
+        navigation.getChildren().addAll(nextButton);
 
 
         // Agreement content box
@@ -90,6 +89,17 @@ public class Page1 extends Page {
         VBox.setVgrow(spacer2, Priority.ALWAYS);
 
         CheckBox agreeCheckBox = new CheckBox("I agree");
+
+        nextButton.setDisable(true);
+        agreeCheckBox.setSelected(false);
+
+        agreeCheckBox.setOnAction(event -> {
+            if(agreeCheckBox.isSelected()) {
+                nextButton.setDisable(false);
+            } else {
+                nextButton.setDisable(true);
+            }
+        });
 
         contentBox.getChildren().setAll(title, spacer1, contentScrollPane, spacer2, agreeCheckBox);
         contentBox.setAlignment(Pos.CENTER);
