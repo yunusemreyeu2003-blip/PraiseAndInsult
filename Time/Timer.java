@@ -6,7 +6,7 @@ import java.time.Duration;
 public class Timer {
     private LocalTime startTime;
     private LocalTime endTime;
-    private Duration duration;
+    public Duration duration;
 
     public Timer() {
         start();
@@ -16,12 +16,8 @@ public class Timer {
         startTime = LocalTime.now();
     }
 
-    public void end() {
+    public void stop() {
         endTime = LocalTime.now();
         duration = Duration.between(startTime, endTime);
-    }
-
-    public double duration() {
-        return duration.toMillis();
     }
 }
