@@ -1,13 +1,12 @@
 package Data;
 
-import javafx.util.Duration;
+import java.time.Duration;
 
 public class TestData {
-    public Duration waitTime;
-    public TriggerType triggerType;
-    public Boolean earlyPress;
-    public Duration earlyTime;
-    public Duration reactionTime;
-    public Duration FalsePressWaitTime;
-    public Boolean falsePress;
+    public TriggerType triggerType = null;
+    public Boolean earlyPress = false;
+    public Duration reactionTime = null;
+    public Boolean falsePress = false;
+    public Duration waitTime = null;
+    public Duration FalsePressWaitTime = null;
 }
