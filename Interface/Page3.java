@@ -1,6 +1,7 @@
 package Interface;
 
 import Data.*;
+import Time.*;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -24,16 +25,9 @@ public class Page3 extends Page{
     Text endText = new Text();
     State currentState;
     int currentTestIndex;
+    Timer timer = new Timer();
 
     Button retryButton = new Button();
-
-    enum State {
-        COUNTDOWN,
-        WAIT,
-        TRIGGER,
-        FALSE_TRIGGER,
-        FINISHED
-    }
 
     public Page3(Data data, Scene scene, StackPane root) {
         super(data, scene, root);
@@ -89,12 +83,18 @@ public class Page3 extends Page{
     @Override
     public void handleSpace() {
         switch (currentState) {
+            case WAIT -> {
+                data.warmupData[currentTestIndex].earlyPress = true;
+            }
             case TRIGGER -> {
-                borderPane.setBackground(Background.fill(Color.WHITE));
+                timer.stop();
+                data.warmupData[currentTestIndex].reactionTime = timer.duration;
                 waitPhase();
             }
             case FALSE_TRIGGER -> {
-                borderPane.setBackground(Background.fill(Color.WHITE));
+                timer.stop();
+                data.warmupData[currentTestIndex].reactionTime = timer.duration;
+                data.warmupData[currentTestIndex].falsePress = true;
                 waitPhase();
             }
         }
@@ -130,10 +130,9 @@ public class Page3 extends Page{
         currentState = State.WAIT;
         borderPane.setBackground(Background.fill(Color.WHITE));
 
-        Duration waitTime = Duration.seconds(2 + Math.random() * 5);
-        data.warmupData[currentTestIndex].waitTime = waitTime;
-
-        PauseTransition waitPhase = new PauseTransition(waitTime);
+        double waitTime = 2 + Math.random() * 5;
+        data.warmupData[currentTestIndex].waitTime = DurationHelper.DoubleSecondsToJava(waitTime);
+        PauseTransition waitPhase = new PauseTransition(DurationHelper.DoubleSecondsToJavaFX(waitTime));
 
         TriggerType triggerType;
 
@@ -142,6 +141,8 @@ public class Page3 extends Page{
         } else {
             triggerType = TriggerType.FALSE_TRIGGER;
         }
+
+
 
         switch (currentTestIndex) {
             case 0, 2 -> triggerType = TriggerType.TRIGGER;
@@ -168,16 +169,17 @@ public class Page3 extends Page{
     private void triggerPhase() {
         currentState = State.TRIGGER;
         borderPane.setBackground(Background.fill(Color.RED));
+        timer.start();
     }
 
     private void falseTriggerPhase() {
         currentState = State.FALSE_TRIGGER;
         borderPane.setBackground(Background.fill(Color.BLUE));
+        timer.start();
 
-        Duration falsePressWaitTime = Duration.seconds(1 + Math.random() * 3);
-        data.warmupData[currentTestIndex].FalsePressWaitTime = falsePressWaitTime;
-
-        PauseTransition wait = new PauseTransition(falsePressWaitTime);
+        double falsePressWaitTime = 1 + Math.random() * 3;
+        data.warmupData[currentTestIndex].FalsePressWaitTime = DurationHelper.DoubleSecondsToJava(falsePressWaitTime);
+        PauseTransition wait = new PauseTransition(DurationHelper.DoubleSecondsToJavaFX(falsePressWaitTime));
 
         int falseTriggerIndex = currentTestIndex;
 
@@ -191,10 +193,13 @@ public class Page3 extends Page{
 
     private void finish() {
         currentState = State.FINISHED;
+        borderPane.setBackground(null);
 
         countdownText.setVisible(false);
         endText.setVisible(true);
         retryButton.setVisible(true);
         nextButton.setVisible(true);
+
+        data.printWarmupData();
     }
 }
