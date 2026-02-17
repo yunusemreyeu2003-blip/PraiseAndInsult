@@ -1,6 +1,6 @@
-package Interface;
+package com.ovnc.Interface;
 
-import Data.*;
+import com.ovnc.Data.*;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -51,7 +51,9 @@ public class GUI extends Application {
                 new Page3(data, scene, root),
                 new Page4(data, scene, root),
                 new Page5(data, scene, root),
-                new Page6(data, scene, root)
+                new Page6(data, scene, root),
+                new Page7(data, scene, root),
+                new Page8(data, scene, root)
         );
 
 
@@ -65,7 +67,7 @@ public class GUI extends Application {
             }
         }
 
-        root.getChildren().setAll(pages.get(4).pane);
+        root.getChildren().setAll(pages.get(0).pane);
 
     }
 

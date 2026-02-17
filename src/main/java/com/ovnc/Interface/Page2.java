@@ -1,6 +1,6 @@
-package Interface;
+package com.ovnc.Interface;
 
-import Data.*;
+import com.ovnc.Data.*;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -22,8 +22,8 @@ public class Page2 extends Page{
         navigation.setAlignment(Pos.CENTER);
         navigation.spacingProperty().bind(bottomStack.widthProperty().multiply(0.1));
 
-        prevButton.setText("Previous");
-        nextButton.setText("Next");
+        prevButton.setText("Önceki");
+        nextButton.setText("Sonraki");
         navigation.getChildren().addAll(prevButton, nextButton);
 
         centerStack.setAlignment(Pos.CENTER);

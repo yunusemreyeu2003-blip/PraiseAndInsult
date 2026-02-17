@@ -1,6 +1,6 @@
-package Interface;
+package com.ovnc.Interface;
 
-import Data.*;
+import com.ovnc.Data.*;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

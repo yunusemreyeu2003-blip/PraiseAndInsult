@@ -1,4 +1,4 @@
-package Time;
+package com.ovnc.Time;
 
 public final class DurationHelper {
 

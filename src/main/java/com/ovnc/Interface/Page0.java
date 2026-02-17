@@ -1,6 +1,6 @@
-package Interface;
+package com.ovnc.Interface;
 
-import Data.*;
+import com.ovnc.Data.*;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,7 +19,7 @@ public class Page0 extends Page {
         navigation.setAlignment(Pos.CENTER);
         navigation.spacingProperty().bind(scene.widthProperty().multiply(0.25));
 
-        nextButton.setText("Next");
+        nextButton.setText("Sonraki");
         navigation.getChildren().addAll(nextButton);
 
     }

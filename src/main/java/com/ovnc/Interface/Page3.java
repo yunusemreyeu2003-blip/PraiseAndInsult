@@ -1,13 +1,14 @@
-package Interface;
+package com.ovnc.Interface;
 
-import Data.*;
-import Time.*;
+import com.ovnc.Data.*;
+import com.ovnc.Time.*;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
@@ -18,7 +19,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
-public class Page5 extends Page{
+public class Page3 extends Page{
 
     Text countdownText = new Text();
     Text endText = new Text();
@@ -26,7 +27,9 @@ public class Page5 extends Page{
     int currentTestIndex;
     Timer timer = new Timer();
 
-    public Page5(Data data, Scene scene, StackPane root) {
+    Button retryButton = new Button();
+
+    public Page3(Data data, Scene scene, StackPane root) {
         super(data, scene, root);
 
         upperStack.setPrefHeight(0);
@@ -37,14 +40,20 @@ public class Page5 extends Page{
         navigation.setAlignment(Pos.CENTER);
         navigation.spacingProperty().bind(bottomStack.widthProperty().multiply(0.1));
 
+        retryButton.setText("Tekrar Başlat");
+        retryButton.setOnAction(event -> {
+            onShow();
+        });
         nextButton.setText("Sonraki");
-        navigation.getChildren().addAll(nextButton);
+        navigation.getChildren().addAll(retryButton, nextButton);
 
         centerStack.setAlignment(Pos.CENTER);
 
         countdownText.setFont(new Font(80));
 
-        endText.setText("Başarı ile testin 1.ci aşamasını tamamladınız.");
+        endText.setText(
+                "Isınma Turu bitmiştir dilerseniz tekrardan ısınma turuna girebilir veya teste devam edebilirsiniz."
+        );
         endText.wrappingWidthProperty().bind(scene.widthProperty().multiply(0.8));
         endText.setTextAlignment(TextAlignment.CENTER);
 
@@ -63,6 +72,7 @@ public class Page5 extends Page{
 
     @Override
     public void onShow() {
+        retryButton.setVisible(false);
         nextButton.setVisible(false);
         endText.setVisible(false);
 
@@ -74,18 +84,18 @@ public class Page5 extends Page{
     public void handleSpace() {
         switch (currentState) {
             case WAIT -> {
-                data.controlData[currentTestIndex].earlyPress = true;
+                data.warmupData[currentTestIndex].earlyPress = true;
             }
             case TRIGGER -> {
                 timer.stop();
-                data.controlData[currentTestIndex].reactionTime = timer.duration;
-                waitPhase();
+                data.warmupData[currentTestIndex].reactionTime = timer.duration;
+                startTest();
             }
             case FALSE_TRIGGER -> {
                 timer.stop();
-                data.controlData[currentTestIndex].reactionTime = timer.duration;
-                data.controlData[currentTestIndex].falsePress = true;
-                waitPhase();
+                data.warmupData[currentTestIndex].reactionTime = timer.duration;
+                data.warmupData[currentTestIndex].falsePress = true;
+                startTest();
             }
         }
     }
@@ -103,43 +113,40 @@ public class Page5 extends Page{
                 countdownText.setText(String.valueOf(count[0]--));
             } else {
                 countdownText.setVisible(false);
-                waitPhase();
+                startTest();
             }
         }));
         countdown.setCycleCount(4);
         countdown.play();
     }
 
-    private void waitPhase() {
+    private void startTest() {
         currentTestIndex++;
         System.out.println(currentTestIndex);
-        if (currentTestIndex >= Config.CONTROL_TEST_COUNT) {
+        if (currentTestIndex >= Config.WARMUP_COUNT) {
             finish();
-            return;
         }
+        else {
+            waitPhase();
+        }
+    }
+
+    private void waitPhase() {
         currentState = State.WAIT;
         borderPane.setBackground(Background.fill(Color.WHITE));
 
         double waitTime = 2 + Math.random() * 5;
-        data.controlData[currentTestIndex].waitTime = DurationHelper.DoubleSecondsToJava(waitTime);
+        data.warmupData[currentTestIndex].waitTime = DurationHelper.DoubleSecondsToJava(waitTime);
         PauseTransition waitPhase = new PauseTransition(DurationHelper.DoubleSecondsToJavaFX(waitTime));
 
-        TriggerType triggerType;
-
-        if (Math.random() < 0.5) {
-            triggerType = TriggerType.TRIGGER;
-        } else {
-            triggerType = TriggerType.FALSE_TRIGGER;
-        }
-
-        data.controlData[currentTestIndex].triggerType = triggerType;
+        TriggerType triggerType = null;
 
         switch (currentTestIndex) {
             case 0, 2 -> triggerType = TriggerType.TRIGGER;
             case 1 -> triggerType = TriggerType.FALSE_TRIGGER;
         }
 
-        data.controlData[currentTestIndex].triggerType = triggerType;
+        data.warmupData[currentTestIndex].triggerType = triggerType;
 
         TriggerType[] triggerTypeRef = {triggerType};
 
@@ -168,14 +175,14 @@ public class Page5 extends Page{
         timer.start();
 
         double falsePressWaitTime = 1 + Math.random() * 3;
-        data.controlData[currentTestIndex].FalsePressWaitTime = DurationHelper.DoubleSecondsToJava(falsePressWaitTime);
+        data.warmupData[currentTestIndex].FalsePressWaitTime = DurationHelper.DoubleSecondsToJava(falsePressWaitTime);
         PauseTransition wait = new PauseTransition(DurationHelper.DoubleSecondsToJavaFX(falsePressWaitTime));
 
         int falseTriggerIndex = currentTestIndex;
 
         wait.setOnFinished(event -> {
             if (falseTriggerIndex == currentTestIndex) {
-                waitPhase();
+                startTest();
             }
         });
         wait.play();
@@ -185,10 +192,9 @@ public class Page5 extends Page{
         currentState = State.FINISHED;
         borderPane.setBackground(null);
 
-        endText.setVisible(true);
         countdownText.setVisible(false);
+        endText.setVisible(true);
+        retryButton.setVisible(true);
         nextButton.setVisible(true);
-
-        data.printControlData();
     }
 }

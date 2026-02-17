@@ -1,4 +1,4 @@
-package Time;
+package com.ovnc.Time;
 
 import java.time.LocalTime;
 import java.time.Duration;
